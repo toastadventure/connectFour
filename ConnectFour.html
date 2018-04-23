@@ -1,0 +1,295 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Connect Four</title>
+    <link rel="stylesheet" href="connectFour.css">
+  </head>
+  <body>
+  	<h1> Connect Four </h1>
+    <br>
+    <br>
+
+    <!-- Inspired by: https://codepen.io/natewiley/pen/Ciwyn -->
+    <div id="particle-container">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+
+    <p id="message">Welcome</p>
+    <br>
+  	<div>
+
+			<table style="width:150px" id="gameBoard" >
+	      <tr id="playButtons">
+	        <td align="center"><input type="button" onclick="playInColumn(0)"></td>
+          <td align="center"><input type="button" onclick="playInColumn(1)"></td>
+          <td align="center"><input type="button" onclick="playInColumn(2)"></td>
+          <td align="center"><input type="button" onclick="playInColumn(3)"></td>
+          <td align="center"><input type="button" onclick="playInColumn(4)"></td>
+          <td align="center"><input type="button" onclick="playInColumn(5)"></td>
+          <td align="center"><input type="button" onclick="playInColumn(6)"></td>
+	      </tr>
+        <tr>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+        </tr>
+        <tr>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+        </tr>
+        <tr>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+        </tr>
+        <tr>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+        </tr>
+        <tr>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+        </tr>
+        <tr>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+          <td align="center">o</td>
+        </tr>
+	    </table>
+	    <br>
+	    <br>
+
+      <!-- <p><input type="button" onclick="nextTurn()" value="skip turn"></p> -->
+    </div>
+    <footer>
+    <!-- <a href="mailto:treretter@gmail.com?subject=Connect%20four&body=How%20are%20you">feedback @</a><br> -->
+    </footer>
+    <br>
+    <br>
+    <br>
+    <script>
+
+      document.getElementById('particle-container').style.display = 'none'; // hide the winning dots.
+      function showDots(){
+        document.getElementById('particle-container').style.display = 'block'; // show winning dots.
+      }
+
+      let emptyCell = 'o'; // value of empty cells.
+
+      // get player names
+      let player1 = {
+        name: 'Player 1', //prompt('Player 1, please enter your name', 'Player 1'),
+        icon: 1
+      };
+      let player2 = {
+        name: 'Player 2', //prompt('Player 2, please enter your name', 'Player 2'),
+        icon: 2
+      };
+      // set first player
+      let player = player1; 
+
+
+      // update message
+      function updateMessage() {
+        let msg = document.getElementById("message");
+      msg.innerHTML = "It's " + player.name + "\'s turn";
+      }
+      updateMessage();
+      
+
+      // change player / take turns
+      function nextTurn() { // return next player
+        if (player === player1) {
+          player = player2;
+        } else {
+          player = player1;
+        }
+        updateMessage();
+      }
+
+
+      // get cell data
+      function getCell(row, col, from) {
+        if (row === undefined || col === undefined) {
+          console.log('undefined', row, col, from);
+        }
+        return (document.getElementById("gameBoard").rows[row].cells.item(col).innerHTML);
+      }
+
+
+      // play your turn
+      function playInColumn(col) {
+        let row = 6; // start at the bottom row.
+        let cellContent = getCell(row, col, 'playInColumn'); // get current cell content.
+
+        while (cellContent !== emptyCell) { // climb the column until an empty cell is found.
+          row--;
+          if (row < 1) { // if column is full...
+            // alert message that the column is full
+            document.getElementById("message").innerHTML = (player.name + ', this column is full, try a different one.');
+            return;
+          }
+          cellContent = getCell(row, col, 'playInColumn'); // update current cell content.
+        }
+
+        let playCell = (document.getElementById("gameBoard").rows[row].cells[col]);
+        playCell.innerHTML = player.icon; // change cell content to player's icon.
+        if (winCheck(row, col)) {
+          return;
+        }
+        nextTurn(); // change player and update message.
+      }
+
+
+      // winner message
+      function winnerMessage(player) {
+        document.getElementById("message").innerHTML = '*** ' + player.name + ' is the winner! *** <br /> (refresh page to play again)';
+        showDots(); // show winning dots.
+        document.getElementById('playButtons').style.display = 'none';// remove play buttons.
+      }
+
+      // line check 
+      function fourInARow(checkLine) { // returns true if there are 4 in a row.
+        let fourRow = player.icon.toString().repeat(4);
+        return (checkLine.join('').includes(fourRow));
+      }
+
+
+      // win check        
+      function winCheck(rowPlaced, colPlaced) { // return game_over ? true : false;
+        
+        let col = colPlaced;
+        let row = rowPlaced;
+        let checkLine = [];
+
+        function resetxy() {
+          col = colPlaced;
+          row = rowPlaced;
+          checkLine = [];
+        }
+
+        // check vertical            ||||||||||||||
+        if (row < 4) {
+          while (row <= 6) {
+            checkLine.push(getCell(row, col, 'vertical'));
+            row++;
+          }
+          if (fourInARow(checkLine)) {
+            winnerMessage(player);
+            return true;
+          }
+        }
+
+        resetxy();
+        // check horizontal              ----------------
+        let fullRow = [];
+        for (col = 0; col < 7; col++) {
+          fullRow.push(getCell(row, col, 'check horizontal')); // make array of elements in row.
+        }
+        if (fourInARow(fullRow)) {
+          winnerMessage(player);
+          return true;
+        }
+
+        resetxy();
+        // check diagonal Up Left \ Down Right \\\\\\\\\\\
+        while (col > 0 && row > 1) {
+          col--;
+          row--;
+        }
+        while (col < 7 && row < 7) {
+          checkLine.push(getCell(row, col, 'up-left'));
+          col++;
+          row++;
+        }
+        if (fourInARow(checkLine)) {
+          winnerMessage(player);
+          return true;
+        }
+
+        resetxy();
+        // check diagonal Up Right / Down Left /////////////
+        while (col < 6 && row > 1) {
+          col++;
+          row--;
+        }
+        while (col >= 0 && row < 7) {
+          checkLine.push(getCell(row, col, 'up-right'));
+          col--;
+          row++;
+        }
+        if (fourInARow(checkLine)) {
+          winnerMessage(player);
+          return true;
+        }
+        
+        // check for tie
+        
+        return false; // keep playing
+      }
+
+
+
+    </script>
+  </body>
+</html>
+
